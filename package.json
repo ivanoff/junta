@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "node src",
+    "start": "./node_modules/.bin/nodemon -V --ignore '*.json' src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
+    "nodemon": "^2.0.22",
     "tail": "^2.2.6",
     "the-log": "^3.0.1"
   }
