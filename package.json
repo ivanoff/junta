@@ -5,13 +5,14 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "./node_modules/.bin/nodemon -V --ignore '*.json' src",
+    "start": "./node_modules/.bin/nodemon -V --ignore '*.json' 'src' || touch src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@slack/web-api": "^6.8.1",
     "dotenv": "^16.0.3",
     "nodemon": "^2.0.22",
     "tail": "^2.2.6",
