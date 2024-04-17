@@ -1,0 +1,24 @@
+{
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "no-console": "off",
+    "no-restricted-syntax": "off"
+  },
+  "globals": {
+    "fetch": false,
+    "FormData": false
+  },
+  "plugins": [
+    "security"
+  ],
+  "extends": [
+    "airbnb-base",
+    "plugin:security/recommended"
+  ]
+}

@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "./node_modules/.bin/nodemon -V --ignore '*.json' 'src' || touch src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint src/ --cache --ignore-pattern .gitignore",
+    "fix": "eslint src/ --ignore-pattern .gitignore --fix"
   },
   "license": "MIT",
   "dependencies": {
@@ -15,6 +17,12 @@
     "nodemon": "^2.0.22",
     "tail": "^2.2.6",
     "the-log": "^3.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.41.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-security": "^1.7.1"
   },
   "repository": {
     "type": "git",
