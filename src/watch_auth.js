@@ -13,7 +13,7 @@ const dismatchFunction = (str) => str.match(/pam_unix\(cron:session\)/);
 let watchFileFunction = () => {};
 try {
   await fs.access(file, fs.constants.F_OK);
-  watchFileFunction = async () => watch('/var/log/auth.log', matchFunction, dismatchFunction);
+  watchFileFunction = async () => watch(file, matchFunction, dismatchFunction);
 } catch {
   message(`file ${file} not found`);
 }
