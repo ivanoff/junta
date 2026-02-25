@@ -2,59 +2,54 @@
 
 # junta
 
-### Port Monitoring
+Lightweight server monitor that reports events to console, Telegram, and Slack.
 
-The program continuously scans the server for new open ports and detects when a new port becomes accessible.
+## What it monitors
 
-### User Authorization Monitoring
+- Open ports (`netstat -tulpn`, every 60 seconds). Alerts only for newly observed entries.
+- Running processes (`ps aux`, every 60 seconds). Alerts only for newly observed processes.
+- Auth activity (`/var/log/auth.log` via `tail`). Matches logins, `sudo` activity, and opened sessions.
+- URL availability (configured in `urls.js`, interval via env).
+- TLS certificate expiry (configured in `domains.js`, interval via env). Alerts when a cert has 3 or fewer days left.
+- Free disk space (configured in `disks.js`, interval and threshold via env). Alerts on low space and recovery.
 
-It monitors user authorization activities on the server and detects when new users are granted authorization.
+## Notification channels
 
-### Program Execution Monitoring
+- Console output (always enabled)
+- Telegram (`TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHATS`)
+- Slack (`SLACK_TOKEN` and `SLACK_CHANNELS`)
 
-The program keeps track of programs running on the server and identifies when a new program is executed.
+## Requirements
 
+- Node.js 18+
+- Linux host with `netstat` available
+- Read access to `/var/log/auth.log` (auth watcher is skipped if the file does not exist)
 
-### Url Monitoring
+## Setup
 
-The program periodically checks a list of URLs to ensure that the websites are accessible and responding correctly. If a URL becomes inaccessible or returns an unexpected response, the program will alert the user.
-To configure the URLs to be monitored, you can add them to the `urls.js` file.
-
-### Domain Certificates Monitoring
-
-The program monitors the SSL/TLS certificates for domains associated with the server. It alerts the user when a certificate is about to expire, allowing them to renew the certificate in a timely manner and ensure the continued security of the website.
-To monitor SSL/TLS certificates, the program uses the `domains.js` file to specify the domains to be monitored. You can add or remove domains from this file as needed.
-
-### Notification System
-
-When any of the above events occur, the program sends you a notification or message to alert you about the event. This can be done through various communication channels such as email, SMS, or instant messaging.
-Add processes that restart periodically to `processes_skip.js` file to exclude annoying messages.
-
-## Set-up
-
-- clone  repository and install dependences:
-
-```
+```bash
 git clone https://github.com/ivanoff/junta.git
+cd junta
+npm install
+cp .env.example .env
 ```
 
-```
-cd junta && npm install
-```
+Optional configuration files:
 
-- (optional) Add URLs that you want to monitor to the urls.js file.
+- `urls.js` for URL checks
+- `domains.js` for certificate checks
+- `disks.js` for mount points to check free space
+- `processes_skip.js` for noisy processes to ignore
 
-- (optional) Add domains that you want to monitor SSL/TLS certificates to the `domains.js` file.
+Edit `.env` as needed:
 
-- (optional) Add processes that restart periodically to `processes_skip.js` file.
-
-- Create and edit `.env` file. The example of `.env` is below:
-
-```
+```dotenv
 SERVER_NAME=local
 
 URLS_CHECK_DELAY_SECONDS=600
 DOMAINS_CHECK_DELAY_DAYS=1
+DISK_CHECK_DELAY_HOURS=1
+DISK_CHECK_THRESHOLD_GB=20
 
 TELEGRAM_BOT_TOKEN=0000000000:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 TELEGRAM_CHATS=000000001,000000002,000000003
@@ -63,27 +58,25 @@ SLACK_TOKEN=xoxb-00000000000-0000000000000-AAAAAAAAAAAAAAAAAAAAAAA
 SLACK_CHANNELS=CAAAAAAAAAAAAA,CBBBBBBBBBBBBBB
 ```
 
-- `SERVER_NAME` (optional) - name of the server. This information will be added to each message.
+### Environment variables
 
-- `URLS_CHECK_DELAY_SECONDS` (optional) - the delay in seconds between checking the URLs. Default is 600 seconds (10 minutes).
+- `SERVER_NAME`: Prefix added to every message.
+- `URLS_CHECK_DELAY_SECONDS`: URL check interval in seconds. Default is `600`.
+- `DOMAINS_CHECK_DELAY_DAYS`: TLS check interval in days. Default is `1`.
+- `DISK_CHECK_DELAY_HOURS`: Disk check interval in hours. Default is `1`.
+- `DISK_CHECK_THRESHOLD_GB`: Low-space threshold in GB. Default is `20`.
+- `TELEGRAM_BOT_TOKEN`: Telegram bot token.
+- `TELEGRAM_CHATS`: Comma-separated chat IDs.
+- `SLACK_TOKEN`: Slack token.
+- `SLACK_CHANNELS`: Comma-separated Slack channel IDs.
 
-- `DOMAINS_CHECK_DELAY_DAYS` (optional) - the delay in days between checking the domain certificates. Default is 1 day.
+## Run
 
-- `TELEGRAM_BOT_TOKEN` (optional) - telegram messenger token. See [Telegram Bots Tutorial](https://core.telegram.org/bots/tutorial)
-
-- `TELEGRAM_CHATS` (optional) - list of chat ids to send messages seeparated by comma. See [getUpdates](https://telegram-bot-sdk.readme.io/reference/getupdates) request (result->message->chat->id)
-
-- `SLACK_TOKEN` (optional) - slack token. See [Getting a Slack token](https://api.slack.com/tutorials/tracks/getting-a-token)
-
-- `SLACK_CHANNELS` (optional) - see channel properties and add bot to this channel
-
-## Start
-
-```
+```bash
 npm start
 ```
 
-You can use `screen` to start in background mode
+`npm start` runs `nodemon` in watch mode and sends `up` on startup and `down` on exit.
 
 ## Example
 

@@ -3,6 +3,7 @@ import watchProcesses from './processes.js';
 import watchAuth from './watch_auth.js';
 import checkUrls from './urls.js';
 import checkDomains from './domains.js';
+import checkDisk from './disk.js';
 import onExit from './exit.js';
 import message from './message.js';
 
@@ -11,6 +12,7 @@ await watchProcesses();
 await watchAuth();
 await checkUrls();
 await checkDomains();
+await checkDisk();
 
 await message('up');
 onExit(async () => message('down'));
