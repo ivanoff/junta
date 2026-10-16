@@ -34,5 +34,4 @@ export default [
     /^lmtp -t unix -u/,
     /^trivial-rewrite -n rewrite/,
     /^\/lib\/systemd\/systemd-udevd/,
-    /^postgres: postgres postgres .* idle$/,
 ];

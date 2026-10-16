@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import util from 'node:util';
 import { exec as execToPromisify } from 'child_process';
 import { prefix } from './message.js';
+import portsSkip from '../ports_skip.js';
 
 const message = prefix('PORTS');
 const exec = util.promisify(execToPromisify);
@@ -25,6 +26,12 @@ async function check() {
   const { stdout: portsString } = await exec('netstat -tulpn');
   const toSave = portsString.split('\n').slice(2).filter(Boolean)
     .reduce((acc, item) => {
+      if (portsSkip.some((pattern) => {
+        if (!(pattern instanceof RegExp)) return pattern === item;
+        pattern.lastIndex = 0;
+        return pattern.test(item);
+      })) return acc;
+
       const m = item.match(/^(\w+)[\s\d]+?([\d.:a-f]{3,}).*(\/(\S+)|-)/);
       if (!m) {
         message('cannot parse ports', item);

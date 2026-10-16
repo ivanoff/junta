@@ -40,6 +40,7 @@ Optional configuration files:
 - `domains.js` for certificate checks
 - `disks.js` for mount points to check free space
 - `processes_skip.js` for noisy processes to ignore
+- `ports_skip.js` for ports to ignore (patterns match the complete `netstat -tulpn` output line)
 
 Edit `.env` as needed:
 
